@@ -1,0 +1,21 @@
+[Unit]
+
+Description=Hello Webservice
+
+After=network-online.target
+Wants=network-online.target
+
+StartLimitIntervalSec=600
+StartLimitBurst=5
+
+[Service]
+Type=exec
+User=root
+Group=root
+ExecStart=/usr/bin/hello-web
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,46 @@
+---
+- name: Deploy app from tarball
+  hosts: all
+  become: yes
+
+  vars:
+    app_name: my_app
+    app_user: web
+    app_tarball_url: https://github.com/user/repo/releases/download/v1.0.0/my_app.tar.gz
+    app_service_file: my_app.service
+
+  tasks:
+    - name: Create user for the app
+      user:
+        name: "{{ app_user }}"
+        state: present
+
+    - name: Download tarball
+      get_url:
+        url: "{{ app_tarball_url }}"
+        dest: "/tmp/{{ app_name }}.tar.gz"
+
+    - name: Extract tarball
+      unarchive:
+        src: "/tmp/{{ app_name }}.tar.gz"
+        dest: "/home/{{ app_user }}"
+        remote_src: yes
+
+    - name: Copy service file
+      copy:
+        src: "{{ app_service_file }}"
+        dest: "/etc/systemd/system/{{ app_name }}.service"
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable service
+      systemd:
+        name: "{{ app_name }}.service"
+        enabled: yes
+
+    - name: Start service
+      systemd:
+        name: "{{ app_name }}.service"
+        state: started
