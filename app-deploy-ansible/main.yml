@@ -1,0 +1,8 @@
+---
+- name: Install the hello web app
+  hosts: [nodes]
+  become: true
+  vars:
+    hello_web_version: "latest"
+  roles:
+    - deploy-hello-web

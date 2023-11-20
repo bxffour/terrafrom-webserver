@@ -1,3 +1,12 @@
+terraform {
+  backend "azurerm" {
+    resource_group_name = "personal"
+    storage_account_name = "terraformbxffour"
+    container_name = "tfstate"
+    key = "terraform.tfstate"
+  }
+}
+
 module "az_infra" {
   source = "./modules/azure-infra-deployment"
 
@@ -9,8 +18,13 @@ module "az_infra" {
   }
 }
 
-module "web-deploy" {
-  source = "./modules/web-app"
+resource "local_file" "ansible_inventory" {
+  content = templatefile("${path.module}/templates/ansible-inventory.tpl", {
+    nodes = [ module.az_infra.public_ip ]
+    ssh_priv_key = "~/.ssh/id_rsa"
+    ansible_ssh_user = module.az_infra.vm_user
+  })
 
-  host = module.az_infra.public_ip
+  filename = "${path.module}/app-deploy-ansible/inventory.ini"
+  file_permission = "0644"
 }

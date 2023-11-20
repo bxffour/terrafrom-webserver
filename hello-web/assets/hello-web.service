@@ -10,8 +10,10 @@ StartLimitBurst=5
 
 [Service]
 Type=exec
-User=root
-Group=root
+User=shtanwebapp
+Group=shtanwebapp
+WorkingDirectory=/opt/hello-web
+EnvironmentFile=/opt/hello-web/helloweb.env
 ExecStart=/usr/bin/hello-web
 
 Restart=on-failure
