@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,6 +11,12 @@ import (
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/azure-sdk-for-go/sdk/keyvault/azsecrets"
+)
+
+var (
+	buildTime string
+	version   string
+	goVersion string
 )
 
 type application struct {
@@ -30,6 +37,18 @@ func (a application) greet(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	var printVersion bool
+
+	flag.BoolVar(&printVersion, "version", false, "print the version and exit")
+	flag.Parse()
+
+	if printVersion {
+		fmt.Printf("Version:\t%s\n", version)
+		fmt.Printf("Build time:\t%s\n", buildTime)
+		fmt.Printf("Go Version:\t%s\n", goVersion)
+		os.Exit(0)
+	}
+
 	secretName := "gosecret"
 	vaultURI := os.Getenv("AZURE_KEY_VAULT_URI")
 
