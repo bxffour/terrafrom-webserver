@@ -60,20 +60,20 @@ This repository contains a Terraform configuration for deploying infrastructure 
   * **Create a Service Principal.**
 
     A Service Principal is an application within Azure Active Directory with the authentication tokens Terraform needs to perform actions on your behalf. Update the `<SUBSCRIPTION_ID>` with the subscription ID you specified in the previous step.
-
-```bash
-$ az ad sp create-for-rbac --name terraformbxffour --role="Contributor" --role "User Access Administrator" --scopes="/subscriptions/<SUBSCRIPTION-ID>"
-
-```
-output:
-```
+  
+   Run Command:
+   ```bash
+   $ az ad sp create-for-rbac --name terraformbxffour --role="Contributor" --role "User Access Administrator" --scopes="/subscriptions/<SUBSCRIPTION-ID>"
+   ```
+  Command Output:
+  ```
     {
-      "appId": "xxxxxx-xxx-xxxx-xxxx-xxxxxxxxxx",
-      "displayName": "azure-cli-2022-xxxx",
-      "password": "xxxxxx~xxxxxx~xxxxx",
-      "tenant": "xxxxx-xxxx-xxxxx-xxxx-xxxxx"
-    }
-```
+        "appId": "xxxxxx-xxx-xxxx-xxxx-xxxxxxxxxx",
+        "displayName": "azure-cli-2022-xxxx",
+        "password": "xxxxxx~xxxxxx~xxxxx",
+        "tenant": "xxxxx-xxxx-xxxxx-xxxx-xxxxx"
+      }
+  ```
 NOTE: This script needs the `User Access Administrator` role in addition to the `Contributor` role because it makes role assignments.
 
 * **Set your environment variables.**
