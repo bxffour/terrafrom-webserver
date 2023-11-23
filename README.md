@@ -102,19 +102,12 @@ $env:ARM_TENANT_ID="<TENANT_ID>"
 
 ### Initialize Terraform configuration.
 
-  The first command that should be run after writing a new Terraform configuration is the `terraform init` command to initialize a working directory containing Terraform configuration files. It is safe to run this command multiple times.
-
-  If you ever set or change modules or backend configuration for Terraform, rerun this command to reinitialize your working directory. If you forget, other commands will detect it and remind you to do so if necessary.
-
   Run command:
-
 ```bash
 $ terraform init
 ```
 
 ### Validate the changes.
-
-The terraform plan command lets you see what Terraform will do before actually making any changes.
 
 - Run command:
 ```bash
@@ -123,16 +116,12 @@ $ terraform plan
 
 ### Apply the changes.
 
-The terraform apply command lets you apply your configuration, and it creates the infrastructure.
-
 Run command:
 ```bash
 $ terraform apply
 ```
 
 ### Clean up the resources created.
-
-When you have finished, the terraform destroy command destroys the infrastructure you created.
 
 Run command:
 ```bash
