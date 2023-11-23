@@ -1,3 +1,4 @@
+# Create an Azure Virtual Network
 resource "azurerm_virtual_network" "main" {
   name = "${local.cleansed_prefix}-network"
   location = var.location
@@ -5,6 +6,7 @@ resource "azurerm_virtual_network" "main" {
   resource_group_name = azurerm_resource_group.main.name
 }
 
+# Create an internal subnet within the virtual network.
 resource "azurerm_subnet" "internal" {
   name = "internal"
   resource_group_name = azurerm_resource_group.main.name
@@ -13,6 +15,7 @@ resource "azurerm_subnet" "internal" {
   service_endpoints = [ "Microsoft.KeyVault" ]
 }
 
+# Create a public IP address for the virtual machine.
 resource "azurerm_public_ip" "main" {
   name = "${local.cleansed_prefix}-publicnet"
   resource_group_name = azurerm_resource_group.main.name
@@ -20,12 +23,14 @@ resource "azurerm_public_ip" "main" {
   allocation_method = "Static"
 }
 
+# Create a network security group and define inbound rules.
 resource "azurerm_network_security_group" "main" {
   name = "${local.cleansed_prefix}-securitygrp"
   resource_group_name = azurerm_resource_group.main.name
   location = var.location
 }
 
+# Define an inbound rule that allows SSH traffic.
 resource "azurerm_network_security_rule" "ssh" {
   name = "ssh"
   resource_group_name = azurerm_resource_group.main.name
@@ -40,6 +45,7 @@ resource "azurerm_network_security_rule" "ssh" {
   destination_address_prefix = "*"
 }
 
+# Define a network security rule that allows tcp traffic on port 8080
 resource "azurerm_network_security_rule" "http" {
   name = "http"
   resource_group_name = azurerm_resource_group.main.name
@@ -54,6 +60,7 @@ resource "azurerm_network_security_rule" "http" {
   destination_address_prefix = "*"
 }
 
+# Create a network interface for the virtual machine.
 resource "azurerm_network_interface" "main" {
   name = "${local.cleansed_prefix}-nic"  
   resource_group_name = azurerm_resource_group.main.name
@@ -67,11 +74,13 @@ resource "azurerm_network_interface" "main" {
   }
 }
 
+# Generate an RSA SSH key pair for the virtual machine.
 resource "tls_private_key" "ssh" {
  algorithm = "RSA"
  rsa_bits = 4096
 }
 
+# Create an Azure Linux Virtual Machine
 resource "azurerm_linux_virtual_machine" "main" {
   name = "${local.cleansed_prefix}-vm"
   resource_group_name = azurerm_resource_group.main.name

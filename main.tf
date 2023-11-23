@@ -1,3 +1,4 @@
+# Define Terraform backend configuration for storing state files in Azure Storage.
 terraform {
   backend "azurerm" {
     resource_group_name = "personal"
@@ -6,6 +7,7 @@ terraform {
     key = "terraform.tfstate"
   }
 
+ # Declare required Terraform providers with versions.
   required_providers {
     local = {
       source = "hashicorp/local"
@@ -19,14 +21,15 @@ terraform {
   }
 }
 
+# Define local variables for paths and file names.
 locals {
   ssh_private_key_path = pathexpand("~/.ssh/shtan_id_rsa")
   ssh_public_key_path = pathexpand("~/.ssh/shtan_id_rsa.pub")
   playbook = "${path.module}/app-deploy-ansible/main.yml"
-  # varsfile = "${path.module}/app-deploy-ansible/vars.yml"
   inventory = "${path.module}/app-deploy-ansible/inventory.ini"
 }
 
+# Invoke the Azure infrastructure deployment module.
 module "az_infra" {
   source = "./modules/azure-infra-deployment"
 
@@ -37,6 +40,8 @@ module "az_infra" {
   vm_image = var.vm_image
 }
 
+# Dynamically create ansible inventory file by injecting the ip address of the 
+# provisioned vm, the vm admin user and the path to the ssh private key
 resource "local_file" "ansible_inventory" {
   content = templatefile("${path.module}/templates/ansible-inventory.tpl", {
     nodes = [ module.az_infra.public_ip ]
@@ -48,6 +53,7 @@ resource "local_file" "ansible_inventory" {
   file_permission = "0644"
 }
 
+# Create local files for SSH key files.
 resource "local_sensitive_file" "vm_ssh_pubkey" {
   content = module.az_infra.ssh_public_key
   filename = local.ssh_public_key_path
@@ -60,6 +66,7 @@ resource "local_sensitive_file" "vm_ssh_privkey" {
   file_permission = "0600"
 }
 
+# Define a null resource to run Ansible playbook after Azure infrastructure provisioning.
 resource "null_resource" "ansible_run" {
   depends_on = [ 
     local_file.ansible_inventory, 
@@ -68,6 +75,7 @@ resource "null_resource" "ansible_run" {
     module.az_infra
   ]
 
+  # Use local-exec provisioner to execute Ansible playbook.
   provisioner "local-exec" {
     command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook ${local.playbook} -e kvname=${module.az_infra.kvname} -e app_version=${var.app_version} -i ${local.inventory}"
   }
