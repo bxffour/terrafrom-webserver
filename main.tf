@@ -30,14 +30,11 @@ locals {
 module "az_infra" {
   source = "./modules/azure-infra-deployment"
 
-  vm_image = {
-    publisher = "Canonical"
-    offer = "0001-com-ubuntu-server-jammy"
-    sku = "22_04-lts"
-    version = "latest"
-  }
+  name_prefix = var.name_prefix
+  location = var.location
 
-  vm_ssh_pubkey_path = "~/.ssh/id_rsa.pub"
+  vm_admin_user = var.vm_admin_user
+  vm_image = var.vm_image
 }
 
 resource "local_file" "ansible_inventory" {
@@ -64,9 +61,14 @@ resource "local_sensitive_file" "vm_ssh_privkey" {
 }
 
 resource "null_resource" "ansible_run" {
-  depends_on = [ local_file.ansible_inventory ]
+  depends_on = [ 
+    local_file.ansible_inventory, 
+    local_sensitive_file.vm_ssh_privkey, 
+    local_sensitive_file.vm_ssh_pubkey,
+    module.az_infra
+  ]
 
   provisioner "local-exec" {
-    command = "ansible-playbook ${local.playbook} -e @${local.varsfile} -i ${local.inventory}"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook ${local.playbook} -e @${local.varsfile} -i ${local.inventory}"
   }
 }
