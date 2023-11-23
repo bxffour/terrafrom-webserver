@@ -63,7 +63,7 @@ This repository contains a Terraform configuration for deploying infrastructure 
   
    Run Command:
    ```bash
-   $ az ad sp create-for-rbac --name terraformbxffour --role="Contributor" --role "User Access Administrator" --scopes="/subscriptions/<SUBSCRIPTION-ID>"
+   $ az ad sp create-for-rbac --name <some-name> --role="Contributor" --role "User Access Administrator" --scopes="/subscriptions/<SUBSCRIPTION-ID>"
    ```
   Command Output:
   ```
