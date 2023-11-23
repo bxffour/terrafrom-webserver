@@ -10,6 +10,7 @@ resource "azurerm_subnet" "internal" {
   resource_group_name = azurerm_resource_group.main.name
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes = [ "10.0.2.0/24" ]
+  service_endpoints = [ "Microsoft.KeyVault" ]
 }
 
 resource "azurerm_public_ip" "main" {
@@ -66,6 +67,11 @@ resource "azurerm_network_interface" "main" {
   }
 }
 
+resource "tls_private_key" "ssh" {
+ algorithm = "RSA"
+ rsa_bits = 4096
+}
+
 resource "azurerm_linux_virtual_machine" "main" {
   name = "${local.cleansed_prefix}-vm"
   resource_group_name = azurerm_resource_group.main.name
@@ -75,9 +81,13 @@ resource "azurerm_linux_virtual_machine" "main" {
 
   network_interface_ids = [ azurerm_network_interface.main.id ]
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   admin_ssh_key {
     username = var.vm_admin_user
-    public_key = file("~/.ssh/id_rsa.pub")
+    public_key = tls_private_key.ssh.public_key_openssh
   }
 
   source_image_reference {

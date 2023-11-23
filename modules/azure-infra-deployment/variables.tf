@@ -16,6 +16,11 @@ variable "vm_admin_user" {
   default = "shtech"
 }
 
+variable "vm_ssh_pubkey_path" {
+  type = string
+  description = "Path to the ssh pubkey used to authenticate the user"
+}
+
 variable "vm_image" {
   description = "This is the linux virtual machine image config"
   type = object({

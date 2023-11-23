@@ -7,18 +7,22 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 3.80.0"
     }
+
+     azuread = {
+      source = "hashicorp/azuread"
+      version = "2.46.0"
+    }
+
+     tls = {
+      source = "hashicorp/tls"
+      version = "4.0.4"
+    }
   }
 }
 
 # Configure the Microsoft Azure provider
 provider "azurerm" {
   features {}
-}
-
-resource "random_string" "suffix" {
-  length = 8
-  special = false
-  upper = false
 }
 
 resource "azurerm_resource_group" "main" {

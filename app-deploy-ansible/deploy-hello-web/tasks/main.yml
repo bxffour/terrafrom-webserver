@@ -8,33 +8,36 @@
 
 - name: Download and extract application binary
   become: true
-  get_url: 
+  ansible.builtin.get_url: 
     url: "https://github.com/bxffour/terrafrom-webserver/releases/download/{{ hello_web_version }}/hello-web.tar.xz"
     dest: "/tmp/hello-web/hello-web.tar.xz"
 
 - name: Extract hello-web tarball
   become: true
-  command: "tar xJf /tmp/hello-web/hello-web.tar.xz -C /tmp/hello-web"
+  ansible.builtin.unarchive:
+    src: /tmp/hello-web/hello-web.tar.xz
+    dest: /tmp/hello-web
+    remote_src: yes
 
 - name: Copy hello-web binary
   become: true
-  copy:
+  ansible.builtin.copy:
     src: "/tmp/hello-web/hello-web"
     dest: "/usr/bin/hello-web"
     mode: "0755"
+    remote_src: true
 
 - name: Create system user
   become: true
-  user:
+  ansible.builtin.user:
     name: "shtanwebapp"
-    comment: "Hello Web Application User"
-    system: yes
-    shell: "/bin/false"
+    shell: "/sbin/nologin"
     home: "/opt/hello-web"
+    groups: sudo
 
 - name: Create hello-web directory
   become: true
-  file:
+  ansible.builtin.file:
     path: "/opt/hello-web"
     state: directory
     owner: "shtanwebapp"
@@ -43,28 +46,29 @@
 
 - name: Create envfile template
   become: true
-  template:
+  ansible.builtin.template:
     src: "helloweb.env.j2"
-    dest: "/opt/hello-web/hello-web.env"
+    dest: "/opt/hello-web/helloweb.env"
     owner: "shtanwebapp"
     group: "shtanwebapp"
     mode: "0600"
 
 - name: Copy hello-web service file
   become: true
-  copy:
+  ansible.builtin.copy:
     src: "/tmp/hello-web/hello-web.service"
     dest: "/etc/systemd/system/hello-web.service"
     mode: "0644"
+    remote_src: true
 
 - name: Reload systemd
   become: true
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: yes
 
 - name: Start and enable hello-web service
   become: true
-  systemd:
+  ansible.builtin.systemd:
     name: hello-web.service
     state: started
     enabled: yes
