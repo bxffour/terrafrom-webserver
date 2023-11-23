@@ -8,12 +8,7 @@ terraform {
       version = "~> 3.80.0"
     }
 
-     azuread = {
-      source = "hashicorp/azuread"
-      version = "2.46.0"
-    }
-
-     tls = {
+    tls = {
       source = "hashicorp/tls"
       version = "4.0.4"
     }
