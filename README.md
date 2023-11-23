@@ -16,9 +16,9 @@ This repository contains a Terraform configuration for deploying infrastructure 
 
 ## Using the code
 
-* **Configure your access to Azure.**
+### Configure your access to Azure.
 
-  * **Authenticate using the Azure CLI.**
+* **Authenticate using the Azure CLI.**
 
     Terraform must authenticate to Azure to create infrastructure.
 
@@ -61,10 +61,9 @@ This repository contains a Terraform configuration for deploying infrastructure 
 
     A Service Principal is an application within Azure Active Directory with the authentication tokens Terraform needs to perform actions on your behalf. Update the `<SUBSCRIPTION_ID>` with the subscription ID you specified in the previous step.
 
-    Create a Service Principal:
-
 ```bash
 $ az ad sp create-for-rbac --name terraformbxffour --role="Contributor" --role "User Access Administrator" --scopes="/subscriptions/<SUBSCRIPTION-ID>"
+
 ```
 output:
 ```
@@ -77,13 +76,13 @@ output:
 ```
 NOTE: This script needs the `User Access Administrator` role in addition to the `Contributor` role because it makes role assignments.
 
-  * **Set your environment variables.**
+* **Set your environment variables.**
 
 HashiCorp recommends setting these values as environment variables rather than saving them in your Terraform configuration.
 
 In your terminal, set the following environment variables. Be sure to update the variable values with the values Azure returned in the previous command.
 
-* For MacOS/Linux:
+  * For MacOS/Linux:
 
 ```bash
 $ export ARM_CLIENT_ID="<SERVICE_PRINCIPAL_APPID>"
@@ -92,7 +91,7 @@ $ export ARM_SUBSCRIPTION_ID="<SUBSCRIPTION_ID>"
 $ export ARM_TENANT_ID="<TENANT_ID>"
 ```
 
-* For Windows (PowerShell):
+  * For Windows (PowerShell):
 
 ```bash
 $env:ARM_CLIENT_ID="<SERVICE_PRINCIPAL_APPID>"
@@ -101,7 +100,7 @@ $env:ARM_SUBSCRIPTION_ID="<SUBSCRIPTION_ID>"
 $env:ARM_TENANT_ID="<TENANT_ID>"
 ```
 
-* **Initialize Terraform configuration.**
+### Initialize Terraform configuration.
 
   The first command that should be run after writing a new Terraform configuration is the `terraform init` command to initialize a working directory containing Terraform configuration files. It is safe to run this command multiple times.
 
@@ -113,7 +112,7 @@ $env:ARM_TENANT_ID="<TENANT_ID>"
 $ terraform init
 ```
 
-- Validate the changes.
+### Validate the changes.
 
 The terraform plan command lets you see what Terraform will do before actually making any changes.
 
@@ -122,7 +121,7 @@ The terraform plan command lets you see what Terraform will do before actually m
 $ terraform plan
 ```
 
-* Apply the changes.
+### Apply the changes.
 
 The terraform apply command lets you apply your configuration, and it creates the infrastructure.
 
@@ -131,7 +130,7 @@ Run command:
 $ terraform apply
 ```
 
-- Clean up the resources created.
+### Clean up the resources created.
 
 When you have finished, the terraform destroy command destroys the infrastructure you created.
 
