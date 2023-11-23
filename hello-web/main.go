@@ -24,6 +24,7 @@ type application struct {
 	secretName string
 }
 
+// This handler pulls a secret from the key vault and prints it out
 func (a application) greet(w http.ResponseWriter, r *http.Request) {
 	version := ""
 	resp, err := a.kvclient.GetSecret(context.Background(), a.secretName, version, nil)

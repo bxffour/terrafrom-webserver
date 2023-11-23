@@ -23,7 +23,7 @@ locals {
   ssh_private_key_path = pathexpand("~/.ssh/shtan_id_rsa")
   ssh_public_key_path = pathexpand("~/.ssh/shtan_id_rsa.pub")
   playbook = "${path.module}/app-deploy-ansible/main.yml"
-  varsfile = "${path.module}/app-deploy-ansible/vars.yml"
+  # varsfile = "${path.module}/app-deploy-ansible/vars.yml"
   inventory = "${path.module}/app-deploy-ansible/inventory.ini"
 }
 
@@ -69,6 +69,6 @@ resource "null_resource" "ansible_run" {
   ]
 
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook ${local.playbook} -e @${local.varsfile} -i ${local.inventory}"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook ${local.playbook} -e kvname=${module.az_infra.kvname} -e app_version=${var.app_version} -i ${local.inventory}"
   }
 }

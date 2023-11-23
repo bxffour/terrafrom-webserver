@@ -33,3 +33,13 @@ variable "vm_image" {
   }
 }
 
+variable "app_version" {
+  type = string
+  description = "The version of the app to be installed on the vm"
+  default = "0.2.0"
+
+  validation {
+    condition = can(regex("^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?$", var.app_version))
+    error_message = "The version number must follow the Semantic Versioning syntax (MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD])."
+  }
+}

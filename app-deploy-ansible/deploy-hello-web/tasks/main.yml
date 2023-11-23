@@ -9,7 +9,7 @@
 - name: Download and extract application binary
   become: true
   ansible.builtin.get_url: 
-    url: "https://github.com/bxffour/terrafrom-webserver/releases/download/{{ hello_web_version }}/hello-web.tar.xz"
+    url: "https://github.com/bxffour/terrafrom-webserver/releases/download/{{ app_version }}/hello-web.tar.xz"
     dest: "/tmp/hello-web/hello-web.tar.xz"
 
 - name: Extract hello-web tarball

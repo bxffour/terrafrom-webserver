@@ -20,7 +20,7 @@ resource "azurerm_role_assignment" "key_vault" {
 resource "azurerm_key_vault_secret" "main" {
   depends_on = [ azurerm_role_assignment.key_vault ]
   name = "gosecret"
-  value = "This is a secret from the azure key vault, here is an update"
+  value = "Carpe diem. Seize the day, boys. Make your lives extraordinary. - Dead Poets Society"
   key_vault_id = azurerm_key_vault.main.id
 }
 

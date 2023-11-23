@@ -3,6 +3,6 @@
   hosts: [nodes]
   become: true
   vars:
-    hello_web_version: "latest"
+    app_version: "latest"
   roles:
     - deploy-hello-web
